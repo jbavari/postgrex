@@ -626,4 +626,12 @@ defmodule QueryTest do
       Postgrex.Connection.query(context[:pid], "FOO BAR", [])
     assert is_integer(connection_id)
   end
+
+  test "encode point", context do
+    assert [[%Postgrex.Point{x: -97.0, y: 100.0}]] == query("SELECT $1::point", [%Postgrex.Point{x: -97.0, y: 100.0}])
+  end
+
+  test "decode point", context do
+    assert [[%Postgrex.Point{x: -97.5, y: 100.1}]] == query("SELECT point(-97.5, 100.1)::point", [])
+  end
 end
