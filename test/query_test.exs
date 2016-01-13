@@ -634,4 +634,27 @@ defmodule QueryTest do
   test "decode point", context do
     assert [[%Postgrex.Point{x: -97.5, y: 100.1}]] == query("SELECT point(-97.5, 100.1)::point", [])
   end
+
+  test "decode line", context do
+    assert [[%Postgrex.Line{a: 1.0, b: 1.0, c: 1.0}]] == query("SELECT line '{1.0, 1.0, 1.0}'::line", [])
+  end
+
+  test "decode box", context do
+    assert [[%Postgrex.Box{a: %Postgrex.Point{x: 1.0, y: 1.0}, b: %Postgrex.Point{x: 0.0, y: 0.0}}]] == query("SELECT box '(0,0), (1,1)'::box", [])
+  end  
+
+  test "encode point", context do
+    assert [[%Postgrex.Point{x: -97, y: 100}]] == query("SELECT $1::point", [%Postgrex.Point{x: -97, y: 100}])
+  end
+
+  test "encode line", context do
+    assert [[%Postgrex.Line{a: 1.0, b: 1.0, c: 1.0}]] == query("SELECT $1::line", [%Postgrex.Line{a: 1.0, b: 1.0, c: 1.0}])
+  end
+
+  test "encode box", context do
+    # Note on box encoding - even if you insert the points (0,0) and (1,1) for the box,
+    # when you retrieve it from the postgres, it always sends the 'high' point first,
+    # in this case, (1,1) will be the first value.
+    assert [[%Postgrex.Box{a: %Postgrex.Point{x: 1.0, y: 1.0}, b: %Postgrex.Point{x: 0.0, y: 0.0}}]] == query("SELECT $1::box", [%Postgrex.Box{a: %Postgrex.Point{x: 1.0, y: 1.0}, b: %Postgrex.Point{x: 0.0, y: 0.0}}])
+  end
 end

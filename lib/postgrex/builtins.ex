@@ -162,3 +162,34 @@ defmodule Postgrex.Point do
     x: nil,
     y: nil]
 end
+
+defmodule Postgrex.Line do
+  require Decimal
+  @moduledoc """
+  Struct for Postgres Line.
+
+  ## Fields
+    * `a`
+    * `b`
+    * `c`
+  """
+  defstruct [
+    a: nil,
+    b: nil,
+    c: nil]
+end
+
+defmodule Postgrex.Box do
+  
+  @type t :: %__MODULE__{a: Postgrex.Point, b: Postgrex.Point}
+  @moduledoc """
+  Struct for Postgres Box with two corner points.
+
+  ## Fields
+    * `a`
+    * `b`
+  """
+  defstruct [
+    a: nil,
+    b: nil]
+end
